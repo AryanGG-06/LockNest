@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockNest - Generator</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="has-nav">
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <span class="nav-brand">
+            🔐 <span>LockNest</span>
+        </span>
+        <div class="nav-links">
+            <a href="/generator" class="active">⚡ Generate</a>
+            <a href="/add-vault">📂 Vault</a>
+            <a href="/unlock-vault?verify=true">💾 Saved Vault</a>
+            <form action="/login" method="post">
+            <button type="submit" class="logout-btn" >🚪 Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container-md">
+        <div class="logo">
+            <h1>🔐 LockNest</h1>
+            <span>Secure · Fast · Reliable</span>
+        </div>
+
+        <!-- Password Display -->
+        <div class="password-display">
+            <input type="text" id="generatedPassword" value="P@ssw0rd!23" readonly>
+            <button class="btn btn-sm btn-primary" onclick="copyPassword()">📋 Copy</button>
+
+        </div>
+
+        <!-- Options -->
+        <div class="options-card">
+            <h3>Password Options</h3>
+
+            <div class="option-row">
+                <span>Password Length</span>
+                <div class="length-control">
+                    <input type="range" id="lengthSlider" min="6" max="32" value="12" oninput="updateLength()">
+                    <span id="lengthValue">12</span>
+                </div>
+            </div>
+
+            <div class="option-row">
+                <span>Include Uppercase (A-Z)</span>
+                <label class="toggle">
+                    <input type="checkbox" id="includeUpper" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="option-row">
+                <span>Include Lowercase (a-z)</span>
+                <label class="toggle">
+                    <input type="checkbox" id="includeLower" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="option-row">
+                <span>Include Numbers (0-9)</span>
+                <label class="toggle">
+                    <input type="checkbox" id="includeNumbers" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="option-row">
+                <span>Include Symbols (!@#$%^&*)</span>
+                <label class="toggle">
+                    <input type="checkbox" id="includeSymbols">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="option-row">
+                <span>Exclude Ambiguous Characters (il1Lo0O)</span>
+                <label class="toggle">
+                    <input type="checkbox" id="excludeAmbiguous">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Strength Indicator -->
+        <div class="options-card">
+            <h3>Password Strength</h3>
+            <div class="strength-bar">
+                <div class="fill strong" id="strengthFill"></div>
+            </div>
+            <div class="strength-label" id="strengthLabel">Strong</div>
+        </div>
+
+        <button class="btn btn-primary" onclick="generatePassword()">⚡ Generate New Password</button>
+    </div>
+
+    <script>
+        function updateLength() {
+            const slider = document.getElementById('lengthSlider');
+            const value = document.getElementById('lengthValue');
+            value.textContent = slider.value;
+            generatePassword();
+        }
+
+        function generatePassword() {
+            const length = parseInt(document.getElementById('lengthSlider').value);
+            const upper = document.getElementById('includeUpper').checked;
+            const lower = document.getElementById('includeLower').checked;
+            const numbers = document.getElementById('includeNumbers').checked;
+            const symbols = document.getElementById('includeSymbols').checked;
+            const excludeAmb = document.getElementById('excludeAmbiguous').checked;
+
+            let chars = '';
+            let upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let lowerChars = 'abcdefghijklmnopqrstuvwxyz';
+            let numberChars = '0123456789';
+            let symbolChars = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+
+            if (excludeAmb) {
+                upperChars = upperChars.replace(/[ILO]/g, '');
+                lowerChars = lowerChars.replace(/[ilo]/g, '');
+                numberChars = numberChars.replace(/[01]/g, '');
+            }
+
+            if (upper) chars += upperChars;
+            if (lower) chars += lowerChars;
+            if (numbers) chars += numberChars;
+            if (symbols) chars += symbolChars;
+
+            // Fallback if nothing selected
+            if (chars === '') {
+                chars = lowerChars + numberChars;
+            }
+
+            let password = '';
+            // Ensure at least one character from each selected category
+            const categories = [];
+            if (upper) categories.push(upperChars);
+            if (lower) categories.push(lowerChars);
+            if (numbers) categories.push(numberChars);
+            if (symbols) categories.push(symbolChars);
+
+            for (let i = 0; i < categories.length; i++) {
+                password += categories[i][Math.floor(Math.random() * categories[i].length)];
+            }
+
+            for (let i = password.length; i < length; i++) {
+                password += chars[Math.floor(Math.random() * chars.length)];
+            }
+
+            // Shuffle the password
+            password = password.split('').sort(() => Math.random() - 0.5).join('');
+
+            document.getElementById('generatedPassword').value = password;
+            updateStrength(password);
+        }
+
+        function updateStrength(password) {
+            const fill = document.getElementById('strengthFill');
+            const label = document.getElementById('strengthLabel');
+            let score = 0;
+
+            // Length scoring
+            if (password.length >= 8) score += 25;
+            if (password.length >= 12) score += 25;
+            if (password.length >= 16) score += 25;
+
+            // Character variety
+            if (/[a-z]/.test(password)) score += 10;
+            if (/[A-Z]/.test(password)) score += 10;
+            if (/[0-9]/.test(password)) score += 10;
+            if (/[^a-zA-Z0-9]/.test(password)) score += 10;
+
+            // Check for patterns
+            if (/(.)\1{2,}/.test(password)) score -= 10;  // Repeated chars
+
+            // Clamp
+            score = Math.max(0, Math.min(100, score));
+
+            fill.className = 'fill';
+            if (score < 25) {
+                fill.classList.add('weak');
+                label.textContent = 'Weak';
+            } else if (score < 50) {
+                fill.classList.add('medium');
+                label.textContent = 'Medium';
+            } else if (score < 75) {
+                fill.classList.add('strong');
+                label.textContent = 'Strong';
+            } else {
+                fill.classList.add('very-strong');
+                label.textContent = 'Very Strong';
+            }
+        }
+
+        function copyPassword() {
+            const input = document.getElementById('generatedPassword');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value).then(() => {
+                const btn = document.querySelector('.password-display .btn-primary');
+                const original = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    btn.textContent = original;
+                }, 1500);
+            }).catch(() => {
+                alert('Failed to copy. Please select and copy manually.');
+            });
+        }
+
+        function saveToVault() {
+            const password = document.getElementById('generatedPassword').value;
+            window.location.href = '/add-vault?password=' + encodeURIComponent(password);
+        }
+
+        // Generate initial password on load
+        generatePassword();
+
+        // Re-generate on any option change
+        document.querySelectorAll('.toggle input, #lengthSlider').forEach(el => {
+            el.addEventListener('change', generatePassword);
+        });
+    </script>
+</body>
+</html>

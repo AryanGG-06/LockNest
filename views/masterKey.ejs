@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockNest - Login</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>  
+    <!-- Master Key Setup Section (shown after login/signup) -->
+    <div class="container" id="masterKeySection">
+        <div class="logo">
+            <h1>🔐 LockNest</h1>
+            <span>Secure · Fast · Reliable</span>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <h2 style="color: #2d2d3a; font-size: 22px; font-weight: 700; margin-bottom: 12px;">🔑 Create Your Master Key</h2>
+            <p style="color: #8888a0; font-size: 14px; line-height: 1.6;">
+                Your master key is the <strong style="color: #e74c3c;">single most important</strong> credential in this vault.
+                You will need it every time you want to reveal a saved password.
+            </p>
+        </div>
+
+        <!-- Warnings & Guidelines -->
+        <div class="master-key-warnings">
+            <div class="warning-item warning-critical">
+                <span class="warning-icon">⚠️</span>
+                <div>
+                    <strong>Write it down!</strong>
+                    <p>If you forget your master key, there is NO way to recover it or your saved passwords.</p>
+                </div>
+            </div>
+            <div class="warning-item warning-important">
+                <span class="warning-icon">📝</span>
+                <div>
+                    <strong>Store it safely</strong>
+                    <p>Keep it in a password manager or a secure physical location. Do not share it with anyone.</p>
+                </div>
+            </div>
+            <div class="warning-item warning-tip">
+                <span class="warning-icon">🔒</span>
+                <div>
+                    <strong>Make it strong</strong>
+                    <p>Use a long, unique phrase that you'll remember but others can't guess. Avoid common words or personal info.</p>
+                </div>
+            </div>
+            <div class="warning-item warning-tip">
+                <span class="warning-icon">❌</span>
+                <div>
+                    <strong>Don't reuse passwords</strong>
+                    <p>Your master key should not be the same as any password you store in this vault.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Master Key Form -->
+        <form action = "/auth/createdkey" method="post" style="margin-top: 24px;">
+                <%- include('partials/errorMessage') %>
+            <div class="form-group">
+                <label for="newMasterKey">Enter Master Key</label>
+                <input type="password" name="masterKey" id="newMasterKey" placeholder="Create a strong master key" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label for="confirmMasterKey">Confirm Master Key</label>
+                <input type="password" name="confirmMasterKey" id="confirmMasterKey" placeholder="Re-enter your master key" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Save & Continue</button>
+        </form>
+    </div>
+</body>
+</html>

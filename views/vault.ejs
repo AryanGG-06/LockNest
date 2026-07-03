@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockNest - Vault</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="has-nav">
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <span class="nav-brand">
+            🔐 <span>LockNest</span>
+        </span>
+        <div class="nav-links">
+            <a href="/generator">⚡ Generate</a>
+            <a href="/add-vault" class="active">📂 Vault</a>
+            <a href="/unlock-vault?verify=true">💾 Saved Vault</a>
+            <form action="/login" method="post">
+            <button type="submit" class="logout-btn" >🚪 Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container-lg">
+        <div class="logo">
+            <h1>🔐 LockNest</h1>
+            <span>Secure · Fast · Reliable</span>
+        </div>
+
+        <!-- Welcome -->
+        <div class="welcome-text">Welcome to LockNest </div>
+        <div class="welcome-sub">Store and manage your passwords securely</div>
+
+        <!-- Add Entry Form -->
+        <form action  ="<%= editing ? '/update-vault' : '/add-vault' %>"  id="vaultForm" method = "POST">
+            <%- include('partials/errorMessage') %>
+            <input type="hidden" name = "id" value = "<%= editing ? data._id : '' %>"/>
+            <div class="form-group">
+                <label for="platformName">Enter Platform Name</label>
+                <input type="text" name="platform" id="platformName" value="<%= editing ? data.platform : '' %>" placeholder="e.g. Instagram, Gmail, GitHub" required>
+            </div>
+            <div class="form-group">
+                <label for="platformPassword">Enter Password</label>
+                <input type="text" name= "password" id="platformPassword" value="<%= editing ? data.password : '' %>" placeholder="Enter the password" required>
+            </div>
+            <div class="form-group">
+                <label for="masterKey">Enter Master Key</label>
+                <input type="password" name="masterKey" id="masterKey" placeholder="Your master key to unlock vault" required>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Save to Vault</button>
+        </form>
+    </div>
+</body>
+</html>

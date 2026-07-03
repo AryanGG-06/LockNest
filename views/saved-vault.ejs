@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockNest - Saved Vault</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="has-nav">
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <span class="nav-brand">
+            🔐 <span>LockNest</span>
+        </span>
+        <div class="nav-links">
+            <a href="/generator">⚡ Generate</a>
+            <a href="/add-vault">📂 Vault</a>
+            <a href="/unlock-vault?verify=true" class="active">💾 Saved Vault</a>
+            <form action="/login" method="post">
+            <button type="submit" class="logout-btn" >🚪 Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container-lg">
+        <div class="logo">
+            <h1>🔐 LockNest</h1>
+            <span>Secure · Fast · Reliable</span>
+        </div>
+
+        <!-- Welcome -->
+        <div class="welcome-text">Welcome to Saved Vault</div>
+        <div class="welcome-sub">View and manage your saved passwords</div>
+
+        <!-- Saved Entries Table -->
+        <div class="vault-table-wrap">
+            <h3>📋 Saved Passwords</h3>
+            <table class="vault-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Platform</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="entriesBody">
+
+                        <% dataPool.forEach(data =>{ %>
+                        <tr>
+                        <td style="color: #b0b0c8; font-size: 13px; font-weight: 600;">1</td>
+                        <td><span class="platform-name"><%= data.platform %></span></td>
+                        <td class="pw-cell">
+                            <span class="pw-masked">••••••</span>
+                            <span class="pw-real" style="display:none;"><%= data.password %></span>
+                        </td>
+                        <td class="action-cell">
+                            <button class="action-btn" onclick="togglePassword(this)" title="Show/Hide">👁️</button>
+                            <button class="action-btn" onclick="copyPassword(this)" title="Copy">📋</button>
+                            <form action="/update-vault/<%= data._id %>" method="get" class="inline-form">
+                                <input type="hidden" name="editing" value="true">
+                                <button class="action-btn" title="Update">✏️</button>
+                            </form>
+                            <form action="/saved-vault/<%= data._id %>" method="post" class="inline-form">
+                                <button type="submit" class="action-btn danger" title="Delete">🗑️</button>
+                                <input type="hidden" name="id" value="<%= data._id%>">
+                            </form>
+                        </td>
+                        <% }) %>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Master Key Modal -->
+    <!-- <form action class="modal-overlay" id="masterKeyModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>🔑 Enter Master Key</h3>
+                <p>Enter the master key to reveal the password for <strong id="modalPlatformName"></strong></p>
+            </div>
+            <div class="form-group">
+                <label  for="modalMasterKey">Master Key</label>
+                <input type="password" name="masterKey" id="modalMasterKey" placeholder="Enter your master key">
+            </div>
+            <div id="modalError" class="modal-error hidden">❌ Incorrect master key!</div>
+            <div style="display:flex; gap: 10px; margin-top: 18px;">
+                <button class="btn btn-secondary" style="flex:1;">Cancel</button>
+                <button class="btn btn-primary" style="flex:1;">🔓 Unlock</button>
+            </div>
+        </div> -->
+    </div>
+
+    <script>
+        function togglePassword(btn) {
+            const row = btn.closest('tr');
+            const masked = row.querySelector('.pw-masked');
+            const real = row.querySelector('.pw-real');
+            const isHidden = masked.style.display !== 'none';
+            masked.style.display = isHidden ? 'none' : 'inline';
+            real.style.display = isHidden ? 'inline' : 'none';
+            btn.textContent = isHidden ? '🙈' : '👁️';
+        }
+
+        function copyPassword(btn) {
+            const row = btn.closest('tr');
+            const real = row.querySelector('.pw-real');
+            const password = real.textContent.trim();
+            navigator.clipboard.writeText(password).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = '✅';
+                setTimeout(() => btn.textContent = orig, 1000);
+            });
+        }
+    </script>
+</body>
+</html>

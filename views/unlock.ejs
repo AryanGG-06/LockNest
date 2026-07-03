@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockNest - Unlock</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🔐 LockNest</h1>
+            <span>Secure · Fast · Reliable</span>
+        </div>
+
+        <div style="margin-bottom: 24px; text-align: center;">
+            <h2 style="color: #2d2d3a; font-size: 22px; font-weight: 700; margin-bottom: 8px;">🔑 Enter Master Key</h2>
+            <p style="color: #8888a0; font-size: 14px;">Enter your master key to unlock the vault</p>
+        </div>
+        <form action="<%= verify ? '/saved-vault' : '/auth/unlock' %>" method="POST">
+            <%- include('partials/errorMessage') %>
+            <div class="form-group">
+                <label for="masterKey">Master Key</label>
+                <input type="password" id="masterKey" name="masterKey" placeholder="Enter your master key" required>
+            </div>
+            <button type="submit" class="btn btn-primary">🔓 Unlock Vault</button>
+        </form>
+    </div>
+</body>
+</html>
