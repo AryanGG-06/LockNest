@@ -46,9 +46,9 @@
                 </thead>
                 <tbody id="entriesBody">
 
-                        <% dataPool.forEach(data =>{ %>
+                        <% dataPool.forEach((data, index) =>{ %>
                         <tr>
-                        <td style="color: #b0b0c8; font-size: 13px; font-weight: 600;">1</td>
+                        <td style="color: #b0b0c8; font-size: 13px; font-weight: 600;"><%= index + 1 %></td>
                         <td><span class="platform-name"><%= data.platform %></span></td>
                         <td class="pw-cell">
                             <span class="pw-masked">••••••</span>
